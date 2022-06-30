@@ -11,7 +11,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
       .then(function loadData(Kanap) {
         createProduct(Kanap);
         pageTitle(Kanap);
-        colorChoice(Kanap);
+        
       })
 
       .catch(function (err) {
@@ -25,28 +25,35 @@ function pageTitle(Kanap) {
 }
 
 function createProduct(Kanap) {
-      const itemImg = document.getElementsByClassName("item__img")[0];  // pourquoi le 0 a tout débloqué ?
+      const itemImg = document.querySelector(".item__img"); 
       const img = document.createElement("img");
       itemImg.appendChild(img);
       img.src = Kanap.imageUrl;
       img.alt = Kanap.altTxt;
 
-      const price = (document.getElementById("price").innerText = Kanap.price);
+      document.getElementById("price").innerText = Kanap.price;
 
-      const description = (document.getElementById("description").innerText = Kanap.description);
+      document.getElementById("description").innerText = Kanap.description;
 
-      const colors = document.getElementById("colors");
+      colorChoice(Kanap.colors);
 
       }
 
 
 const title = document.getElementById('title');
 
-function colorChoice(Kanap) {
-  //for (let i = 0; i < Kanap.colors.length; i++) {    à voir avec john
+function colorChoice(colors) {
+  const colors = document.getElementById("colors");
+  for (const color of colors) {
+      console.log(color);
       const option = document.createElement("option");
       colors.appendChild(option);
-      option.value = Kanap.colors[i];
-      option.innerText = Kanap.colors[i];
-  //}
+      option.value = color;
+      option.textContent = color
+    }
+
 }
+
+
+
+
