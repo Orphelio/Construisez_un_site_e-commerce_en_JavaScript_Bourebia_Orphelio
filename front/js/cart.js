@@ -1,24 +1,3 @@
-/*
-// Méthode de lecture
-document.getElementById('cartAndFormContainer') = function() {
-  var panier = JSON.parse(localStorage.getItem('cart'));
-		document.getElementById('title').value = productName.title;
-		document.getElementById('price').value = productName.price;
-		document.getElementById('quantity').value = productName.quantity;
-		alert("Lecture effectuée");
-	}; 
-
-// Méthode de lecture
-document.getElementById('cart__items') = function() {
-  var panier = JSON.parse(localStorage.getItem('cart'));
-    nom; document.getElementById("name").value,
-    price; document.getElementById("price").value,
-    quantity; document.getElementById("quantity").value, 
-	color; document.getElementById("colors").value,
-	alert("Lecture effectuée");
-}; */
-
-//////////////////////////////////////////////////////////////////////////////
 /********** CART  **********/
 
 /* pour sauvegarder les quantités ajoutés via le panier */
