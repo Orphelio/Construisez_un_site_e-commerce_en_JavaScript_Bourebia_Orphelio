@@ -1,59 +1,70 @@
-let ProductUrl = window.location;
-let url = new URL(ProductUrl);
-let id = url.searchParams.get("id");
+const kanapImg = document.querySelector(".item__img");
+const kanapName = document.getElementById("title");
+const kanapPrice = document.getElementById("price");
+const kanapDescription = document.getElementById("description");
+const kanapColor = document.getElementById("colors");
+const kanapQuantity = document.getElementById("quantity");
 
-fetch(`http://localhost:3000/api/products/${id}`)
-      .then(function (res) {
-            if (res.ok) {
-                  return res.json();
-            }
-      })
-      .then(function loadData(Kanap) {
-        createProduct(Kanap);
-        pageTitle(Kanap);
-        
-      })
+let params = new URL(document.location).searchParams;
+let productId = params.get("id");
 
-      .catch(function (err) {
-        alert("L'API ne se charge pas correctement, veuillez suivre les inscrutions dans le read.me.");
-      });  
+fetch("http://localhost:3000/api/products/" + productId)
+  .then((response) => response.json())
+  /* reponse de l'API = productData */
+  .then((productData) => {
+    let productImg = document.createElement("img");
+    productImg.setAttribute("src", productData.imageUrl);
+    productImg.setAttribute("alt", productData.altTxt);
+    kanapImg.appendChild(productImg);
 
+    let productName = productData.name;
+    kanapName.textContent = productName;
 
-// function pour donner remplacer le title de la page par le nom du canapé marche pas
-function pageTitle(Kanap) {
-      const title = document.getElementsByClassName("title").innerText = Kanap.name;
-}
+    let productPrice = productData.price;
+    kanapPrice.textContent = productPrice;
 
-function createProduct(Kanap) {
-      const itemImg = document.querySelector(".item__img"); 
-      const img = document.createElement("img");
-      itemImg.appendChild(img);
-      img.src = Kanap.imageUrl;
-      img.alt = Kanap.altTxt;
+    let productDescription = productData.description;
+    kanapDescription.textContent = productDescription;
 
-      document.getElementById("price").innerText = Kanap.price;
-
-      document.getElementById("description").innerText = Kanap.description;
-
-      colorChoice(Kanap.colors);
-
-      }
-
-
-const title = document.getElementById('title');
-
-function colorChoice(colors) {
-  const colors = document.getElementById("colors");
-  for (const color of colors) {
-      console.log(color);
-      const option = document.createElement("option");
-      colors.appendChild(option);
-      option.value = color;
-      option.textContent = color
+    /* array insere colorOption dans l'élément kanapColor */
+    let productColors = productData.colors;
+    for (i = 0; i < productColors.length; i++) {
+      let colorOption = document.createElement("option");
+      colorOption.setAttribute("value", productColors[i]);
+      colorOption.innerText = productColors[i];
+      kanapColor.appendChild(colorOption);
     }
+  })
+  .catch(function (err) {
+    alert(
+      "L'API ne se charge pas correctement, veuillez suivre les inscrutions dans le read.me."
+    );
+  });
 
-}
+/* PANIER // CART */
 
+// Méthode de stockage
+document.getElementById("addToCart").onclick = function () {
+  var panier = JSON.parse(localStorage.getItem("cart"));
+  if (panier == null) panier = [];
+  panier.push({
+    id: productId,
+    img: document.querySelector(".img src"),
+    name: kanapName.textContent,
+    quantity: document.getElementById("quantity").value,
+    color: document.getElementById("colors").value,
+  });
+  localStorage.setItem("cart", JSON.stringify(panier));
+  alert("Mémorisation effectuée");
+};
 
-
+/* Méthode de lecture
+document.getElementById('cartAndFormContainer').onclick = function() {
+  var panier = JSON.parse(localStorage.getItem('cart'));
+		document.getElementById('title').value = productName.title;
+		document.getElementById('price').value = productName.price;
+		document.getElementById('quantity').value = productName.quantity;
+		alert("Lecture effectuée");
+	} else alert("localStorage n'est pas supporté");
+}; */
 

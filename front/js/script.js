@@ -6,7 +6,7 @@ fetch("http://localhost:3000/api/products/")
         return res.json();
       }
     })
-    .then(function loadData(Kanap) {
+    .then(function loadDatas(Kanap) {
       Cards(Kanap);
     })
     .catch(function (err) {
