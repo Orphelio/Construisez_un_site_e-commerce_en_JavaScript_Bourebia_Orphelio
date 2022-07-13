@@ -30,14 +30,14 @@ function addToCart(product) {
   saveCart(cart);
 }
 
-/* delete products from cart */
+/* delete products */
 function deleteFromCart(product) {
   let cart = getCart();
   cart = cart.filter((p) => p.id != product.id || p.color != product.color);
   saveCart(cart);
 }
 
-/* clear the cart when order form is submitted */
+/* clear cart */
 function clearCart() {
   let cart = getCart();
   for (let product of cart) {
@@ -223,7 +223,6 @@ for (let product of cart) {
 let form = document.querySelector(".cart__order__form");
 let submitButton = document.querySelector("#order");
 
-/* Adding pattern and placeholder attributes to each input and listening to input event to display a message (succes or error) in the element below each input */
 form.firstName.setAttribute("pattern", "[a-z A-Z-']{2,50}");
 form.firstName.addEventListener("input", () => {
   textValidity(form.firstName);
