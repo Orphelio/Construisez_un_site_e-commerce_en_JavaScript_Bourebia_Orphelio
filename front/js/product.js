@@ -72,3 +72,13 @@ document.getElementById('addToCart').onclick = function () {
   localStorage.setItem('cart', JSON.stringify(panier));
   alert('Mémorisation effectuée');
 };
+
+(async () => {
+  const res = await fetch('http://localhost:3000/api/products');
+  const products = await res.json();
+  for (const item of cart) {
+    const findProduct = products.find((x) => x._id === item.id);
+    const product = Object.assign(item, findProduct);
+    createProduct(product);
+  }
+})();

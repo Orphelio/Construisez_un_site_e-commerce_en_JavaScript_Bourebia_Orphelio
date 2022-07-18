@@ -1,3 +1,13 @@
+(async () => {
+  const res = await fetch('http://localhost:3000/api/products');
+  const products = await res.json();
+  for (const item of cart) {
+    const findProduct = products.find((x) => x._id === item.id);
+    const product = Object.assign(item, findProduct);
+    createProduct(product);
+  }
+})();
+
 /********** CART FUNCTION  **********/
 
 /* pour sauvegarder les quantités ajoutés via le panier */
@@ -5,7 +15,7 @@ function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* get the cart from localStorage */
+/* get cart from localStorage */
 function getCart() {
   let cart = localStorage.getItem("cart");
   if (cart == null) {
@@ -214,7 +224,7 @@ for (let product of cart) {
       });
     })
     .catch((error) => {
-      console.log("Erreur dans le chargement du panier");
+      console.log("Erreur du chargement du panier");
     });
 }
 
@@ -244,14 +254,21 @@ form.email.addEventListener("input", () => {
 });
 
 
+
+/********** ORDER FORM SUBMIT **********/
+
+/* Initializing array products to be sent to the API */
+let products = [];
+
+/* For each product in the cart, pushing the productId in the array products */
+for (let product of cart) {
+  products.push(product.id);
+}
+
+/* Listening to the submit event - Preventing the submit action to reload the page with the prevendDefault method */
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-
-  let products = [];
-  for (let product of cart) {
-    products.push(product.id);
-  }
-
+  /* Create contact object that will be sent to the API */
   let contact = {
     firstName: form.firstName.value,
     lastName: form.lastName.value,
@@ -259,4 +276,30 @@ form.addEventListener("submit", (event) => {
     city: form.city.value,
     email: form.email.value,
   };
+  /* Send contact object and the products array to the API */
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ contact, products }),
+  })
+    .then((response) => response.json())
+    .then((orderDetails) => {
+      console.log("L'envoi du formulaire à bien été effectué");
+      /* Getting the orderId element from the API response and asigning it into a variable for later use in the url */
+      let orderId = orderDetails.orderId;
+      console.log(orderId);
+      if(orderId){
+        /* Redirecting user on the confirmation page and adding orderId in the url */
+        window.location.href = `./confirmation.html?id=${orderId}`;
+        clearCart();
+      }else{
+        alert("Il semble y avoir un problème. Veuillez ré-essayer ultérieurement")
+      }
+    })
+    .catch((error) => {
+      console.log("L'envoi du formulaire à l'API a rencontré un problème" + error);
+    });
 });

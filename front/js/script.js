@@ -40,17 +40,3 @@ function Cards(Kanap) {
         description.innerText = Kanap.description;
       }
 }
-
-//fetch('http://localhost:3000/api/products')
-
-//  .then(response => response.json())
-
-//  .then(kanap => { 
-//    showProducts(kanap);
-//  })
-  
-//  .catch(_error => {
-//    alert('Le serveur ne répond pas, pour y remédier suivez les instructions dans le read.me.');
-//  });
-
-// fin script.js
