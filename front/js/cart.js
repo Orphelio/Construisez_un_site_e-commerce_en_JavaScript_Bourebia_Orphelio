@@ -1,4 +1,4 @@
-/********** CART  **********/
+/********** CART FUNCTION  **********/
 
 /* pour sauvegarder les quantités ajoutés via le panier */
 function saveCart(cart) {
