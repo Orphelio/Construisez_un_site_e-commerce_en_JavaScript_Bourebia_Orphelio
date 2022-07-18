@@ -255,20 +255,20 @@ form.email.addEventListener("input", () => {
 
 
 
-/********** ORDER FORM SUBMIT **********/
 
-/* Initializing array products to be sent to the API */
+
+/* array products to be sent to the API */
 let products = [];
 
-/* For each product in the cart, pushing the productId in the array products */
+/* For each product in cart, push productId in array products */
 for (let product of cart) {
   products.push(product.id);
 }
 
-/* Listening to the submit event - Preventing the submit action to reload the page with the prevendDefault method */
+/* Prevent submit action to reload page  */
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  /* Create contact object that will be sent to the API */
+  /* Create contact object to be sent to API */
   let contact = {
     firstName: form.firstName.value,
     lastName: form.lastName.value,
@@ -276,7 +276,7 @@ form.addEventListener("submit", (event) => {
     city: form.city.value,
     email: form.email.value,
   };
-  /* Send contact object and the products array to the API */
+  /* Send contact object and products array to API */
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
@@ -287,19 +287,19 @@ form.addEventListener("submit", (event) => {
   })
     .then((response) => response.json())
     .then((orderDetails) => {
-      console.log("L'envoi du formulaire à bien été effectué");
-      /* Getting the orderId element from the API response and asigning it into a variable for later use in the url */
+      console.log("L'envoi du formulaire a bien été effectué");
+      /* Get orderId element from the API response */
       let orderId = orderDetails.orderId;
       console.log(orderId);
       if(orderId){
-        /* Redirecting user on the confirmation page and adding orderId in the url */
+        /* Redirect user on the confirmation page and add orderId in the url */
         window.location.href = `./confirmation.html?id=${orderId}`;
         clearCart();
       }else{
-        alert("Il semble y avoir un problème. Veuillez ré-essayer ultérieurement")
+        alert("Il semble y avoir un problème.")
       }
     })
     .catch((error) => {
-      console.log("L'envoi du formulaire à l'API a rencontré un problème" + error);
+      console.log("L'envoi du formulaire a échoué" + error);
     });
 });
