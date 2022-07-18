@@ -44,27 +44,31 @@ fetch("http://localhost:3000/api/products/" + productId)
 /* PANIER // CART */
 
 // Méthode de stockage
-document.getElementById("addToCart").onclick = function () {
-  var panier = JSON.parse(localStorage.getItem("cart"));
-  if (panier == null) panier = [];
-  panier.push({
-    id: productId,
-    img: document.querySelector(".img src"),
-    name: kanapName.textContent,
-    quantity: document.getElementById("quantity").value,
-    color: document.getElementById("colors").value,
-  });
-  localStorage.setItem("cart", JSON.stringify(panier));
-  alert("Mémorisation effectuée");
-};
-
-/* Méthode de lecture
-document.getElementById('cartAndFormContainer').onclick = function() {
+document.getElementById('addToCart').onclick = function () {
   var panier = JSON.parse(localStorage.getItem('cart'));
-		document.getElementById('title').value = productName.title;
-		document.getElementById('price').value = productName.price;
-		document.getElementById('quantity').value = productName.quantity;
-		alert("Lecture effectuée");
-	} else alert("localStorage n'est pas supporté");
-}; */
-
+  const color = document.getElementById('colors').value;
+  const quantity = Number(document.getElementById('quantity').value);
+  if (panier == null) panier = [];
+  const findProduct = panier.find(
+    (item) => item.id === productId && item.color === color
+  );
+  if (findProduct) {
+    panier = panier.map((item) => {
+      if (item.id === productId && item.color === color) {
+        return {
+          ...item,
+          quantity: item.quantity + quantity,
+        };
+      }
+      return item;
+    });
+  } else {
+    panier.push({
+      id: productId,
+      quantity,
+      color,
+    });
+  }
+  localStorage.setItem('cart', JSON.stringify(panier));
+  alert('Mémorisation effectuée');
+};
