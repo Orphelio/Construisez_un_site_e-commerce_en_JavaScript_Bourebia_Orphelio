@@ -17,7 +17,9 @@ fetch("http://localhost:3000/api/products/" + productId)
     productImg.setAttribute("alt", productData.altTxt);
     kanapImg.appendChild(productImg);
 
-    let productName = productData.name;
+    document.title = productData.name;
+
+    let productName = productData.Name;
     kanapName.textContent = productName;
 
     let productPrice = productData.price;
@@ -40,6 +42,7 @@ fetch("http://localhost:3000/api/products/" + productId)
       "L'API ne se charge pas correctement, veuillez suivre les inscrutions dans le read.me."
     );
   });
+  
 
 /* PANIER // CART */
 
