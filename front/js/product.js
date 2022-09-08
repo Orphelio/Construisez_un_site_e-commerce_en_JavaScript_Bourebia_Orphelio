@@ -52,6 +52,10 @@ document.getElementById('addToCart').onclick = function () {
   const findProduct = panier.find(
     (item) => item.id === productId && item.color === color
   );
+  if (quantity>100) {
+    alert("La quantité doit être inférieur à 100")
+    return
+  }
   if (findProduct) {
     panier = panier.map((item) => {
       if (item.id === productId && item.color === color) {
