@@ -245,7 +245,7 @@ form.address.setAttribute("pattern", "[a-zA-Z 0-9'-]{2,50}");
 form.address.addEventListener("input", () => {
   adressValidity(form.address);
 });
-form.city.setAttribute("pattern", "[0-9]{5}[a-zA-Zéèôöîïûùü' -]{2,50}");
+form.city.setAttribute("pattern", "[a-zA-Zéèôöîïûùü' -]{2,50}");
 form.city.addEventListener("input", () => {
   cityValidity(form.city);
 });
@@ -296,7 +296,7 @@ form.addEventListener("submit", (event) => {
         window.location.href = `./confirmation.html?id=${orderId}`;
         clearCart();
       }else{
-        alert("Il semble y avoir un problème.")
+        alert("Veuillez remplir le formulaire de commande.")
       }
     })
     .catch((error) => {
