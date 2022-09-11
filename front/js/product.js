@@ -42,22 +42,21 @@ fetch("http://localhost:3000/api/products/" + productId)
       "L'API ne se charge pas correctement, veuillez suivre les inscrutions dans le read.me."
     );
   });
-  
 
 /* PANIER // CART */
 
 // Méthode de stockage
-document.getElementById('addToCart').onclick = function () {
-  var panier = JSON.parse(localStorage.getItem('cart'));
-  const color = document.getElementById('colors').value;
-  const quantity = Number(document.getElementById('quantity').value);
+document.getElementById("addToCart").onclick = function () {
+  var panier = JSON.parse(localStorage.getItem("cart"));
+  const color = document.getElementById("colors").value;
+  const quantity = Number(document.getElementById("quantity").value);
   if (panier == null) panier = [];
   const findProduct = panier.find(
     (item) => item.id === productId && item.color === color
   );
-  if (quantity>100) {
-    alert("La quantité doit être inférieur à 100")
-    return
+  if (quantity > 100 || quantity < 1) {
+    alert("La quantité doit être comprise entre 1 et 100");
+    return;
   }
   if (findProduct) {
     panier = panier.map((item) => {
@@ -76,16 +75,6 @@ document.getElementById('addToCart').onclick = function () {
       color,
     });
   }
-  localStorage.setItem('cart', JSON.stringify(panier));
-  alert('Mémorisation effectuée');
+  localStorage.setItem("cart", JSON.stringify(panier));
+  alert("Mémorisation effectuée");
 };
-
-(async () => {
-  const res = await fetch('http://localhost:3000/api/products');
-  const products = await res.json();
-  for (const item of cart) {
-    const findProduct = products.find((x) => x._id === item.id);
-    const product = Object.assign(item, findProduct);
-    createProduct(product);
-  }
-})();
