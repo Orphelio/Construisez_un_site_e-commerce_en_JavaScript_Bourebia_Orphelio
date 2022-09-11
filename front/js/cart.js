@@ -1,13 +1,3 @@
-(async () => {
-  const res = await fetch('http://localhost:3000/api/products');
-  const products = await res.json();
-  for (const item of cart) {
-    const findProduct = products.find((x) => x._id === item.id);
-    const product = Object.assign(item, findProduct);
-    createProduct(product);
-  }
-})();
-
 /********** CART FUNCTION  **********/
 
 /* pour sauvegarder les quantités ajoutés via le panier */
@@ -203,7 +193,7 @@ for (let product of cart) {
         document.location.reload();
       });
 
-/********** TOTAL DISPLAY **********/
+      /********** TOTAL DISPLAY **********/
 
       totalQuantity.textContent = totalOfProducts();
       totalPrice.textContent = getTotalPrice(productDetails, productQuantity);
@@ -228,78 +218,136 @@ for (let product of cart) {
     });
 }
 
-/********** FORM  **********/
-
-let form = document.querySelector(".cart__order__form");
-let submitButton = document.querySelector("#order");
-
-form.firstName.setAttribute("pattern", "[a-z A-Z-']{2,50}");
-form.firstName.addEventListener("input", () => {
-  textValidity(form.firstName);
-});
-form.lastName.setAttribute("pattern", "[a-z A-Z-']{2,50}");
-form.lastName.addEventListener("input", () => {
-  textValidity(form.lastName);
-});
-form.address.setAttribute("pattern", "[a-zA-Z 0-9'-]{2,50}");
-form.address.addEventListener("input", () => {
-  adressValidity(form.address);
-});
-form.city.setAttribute("pattern", "[a-zA-Zéèôöîïûùü' -]{2,50}");
-form.city.addEventListener("input", () => {
-  cityValidity(form.city);
-});
-form.email.addEventListener("input", () => {
-  emailValidity(form.email);
-});
-
-
-
-
-
 /* array products to be sent to the API */
 let products = [];
 
-/* For each product in cart, push productId in array products */
-for (let product of cart) {
-  products.push(product.id);
-}
+/********** FORM  **********/
+let SubmitButton = document.querySelector("#order");
 
-/* Prevent submit action to reload page  */
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  /* Create contact object to be sent to API */
-  let contact = {
-    firstName: form.firstName.value,
-    lastName: form.lastName.value,
-    address: form.address.value,
-    city: form.city.value,
-    email: form.email.value,
+/* To control and send form+products to back */
+SubmitButton.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  /* Form values */
+  const contact = {
+    firstName: document.querySelector("#firstName").value,
+    lastName: document.querySelector("#lastName").value,
+    address: document.querySelector("#address").value,
+    city: document.querySelector("#city").value,
+    email: document.querySelector("#email").value,
   };
+
+  function firstNameControle() {
+    const firstName = contact.firstName;
+    if (/^([A-Za-z\s]{3,20})?([-]{0,1})?([A-Za-z]{3,20})$/.test(firstName)) {
+      document.querySelector("#firstNameErrorMsg").textContent = "";
+      return true;
+    } else {
+      document.querySelector("#firstNameErrorMsg").textContent =
+        "Veuillez inscrire votre prénom. e.g: Maxime";
+      return false;
+    }
+  }
+
+  function lastNameControle() {
+    const lastName = contact.lastName;
+    if (/^([A-Za-z\s]{3,20})?([-]{0,1})?([A-Za-z]{3,20})$/.test(lastName)) {
+      document.querySelector("#lastNameErrorMsg").textContent = "";
+      return true;
+    } else {
+      document.querySelector("#lastNameErrorMsg").textContent =
+        "Veuillez inscrire votre nom de famille. e.g: Dupont";
+      return false;
+    }
+  }
+
+  function addressControl() {
+    const adresse = contact.address;
+    if (/^[A-Za-z0-9\s]{5,100}$/.test(adresse)) {
+      document.querySelector("#addressErrorMsg").textContent = "";
+      return true;
+    } else {
+      document.querySelector("#addressErrorMsg").textContent =
+        "Veuillez inscrire votre adresse. e.g: 10 quai de la charente";
+      return false;
+    }
+  }
+
+  function cityControl() {
+    const city = contact.city;
+    if (/^([A-Za-z\s]{3,20})?([-]{0,1})?([A-Za-z]{3,20})$/.test(city)) {
+      document.querySelector("#cityErrorMsg").textContent = "";
+      return true;
+    } else {
+      document.querySelector("#cityErrorMsg").textContent =
+        "Veuillez inscrire la ville lié à votre adresse. e.g: Paris";
+      return false;
+    }
+  }
+
+  function emailControle() {
+    const email = contact.email;
+    if (
+      /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/.test(
+        email
+      )
+    ) {
+      document.querySelector("#emailErrorMsg").textContent = "";
+      return true;
+    } else {
+      document.querySelector("#emailErrorMsg").textContent =
+        "Veuillez inscrire un email valide, e.g: support@name.com";
+      return false;
+    }
+  }
+
+  /* Validation control */
+  if (
+    firstNameControle() &&
+    lastNameControle() &&
+    addressControl() &&
+    cityControl() &&
+    emailControle()
+  ) {
+    //Contact in localstorage
+    localStorage.setItem("contact", JSON.stringify(contact));
+    sendFromToServer();
+  } else {
+    alert("Le formulaire n'est pas rempli correctement");
+  }
+
+
+  
+  /* Get orderId as response send by server */
+  var orderId = "";
+
   /* Send contact object and products array to API */
-  fetch("http://localhost:3000/api/products/order", {
-    method: "POST",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ contact, products }),
-  })
-    .then((response) => response.json())
-    .then((orderDetails) => {
-      console.log("L'envoi du formulaire a bien été effectué");
-      /* Get orderId element from the API response */
-      let orderId = orderDetails.orderId;
-      console.log(orderId);
-      if(orderId){
-        /* Redirect user on the confirmation page and add orderId in the url */
-        window.location.href = `./confirmation.html?id=${orderId}`;
-        clearCart();
-      }else{
-        alert("Veuillez remplir le formulaire de commande.")
-      }
+  function sendFromToServer() {
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ contact, products }),
     })
-    .catch((error) => {
-      console.log("L'envoi du formulaire a échoué" + error);
-    });
+      .then((response) => {
+        return response.json();
+      })
+      .then((server) => {
+        orderId = server.orderId;
+        if (orderId != "") {
+          alert("Votre commande est validée");
+          location.href = "confirmation.html?id=" + orderId;
+          clearCart();
+        }
+        else{
+          alert("Veuillez remplir le formulaire de commande.")
+        }
+      })
+      .catch((error) => {
+        console.log("L'envoi du formulaire a échoué" + error);
+      });
+  }
 });
